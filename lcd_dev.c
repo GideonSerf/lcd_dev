@@ -157,7 +157,7 @@ void lcd_set_cursor(lcd_t* lcds, uint8_t Xstart,uint8_t Ystart, uint8_t Xend, ui
 
 void lcd_clear(lcd_t* lcds,uint16_t color)
 {
-	lcd_set_cursor(lcds,0, 0, LCD_WIDTH - 1, LCD_HEIGHT - 1);
+	lcd_set_cursor(lcds,0, 0, LCD_WIDTH - 1, LCD_HEIGHT-1);
 
 	int i,j;
 
@@ -176,4 +176,36 @@ void lcd_clear(lcd_t* lcds,uint16_t color)
 	    for (j = 0; j < LCD_HEIGHT/lcds->parallel_lines; j++) {
 	    	lcd_data(lcds,linedata,lcds->parallel_lines*2*LCD_WIDTH);
 	    }
+}
+
+void lcd_draw_rect(lcd_t* lcds, uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color)
+{
+	int data_len,j;
+
+	if(w*h*2>=lcds->parallel_lines*160*2+8)
+	{
+		data_len = w*h;
+		j=1;
+	}
+	else if(w*h>=lcds->parallel_lines*160*2+8)
+	{
+		data_len=w*h/2;
+		j=2;
+	}
+	else
+	{
+		data_len=w;
+		j=h;
+	}
+	uint8_t linedata[data_len*2];
+	for(int i=0;i<data_len;i++)
+	{
+		linedata[i*2] = (uint8_t)(color>>8);
+		linedata[i*2+1] = (uint8_t)(color&0xff);
+	}
+	lcd_set_cursor(lcds,x, y,x+ w-1,y+ h-1);
+	for(int i=0;i<j;i++)
+	{
+		lcd_data(lcds,linedata,2*data_len);
+	}
 }

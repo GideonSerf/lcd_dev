@@ -1,5 +1,8 @@
+#include <stdlib.h>
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
+
+#define RGB(r,g,b) (((r&0b11111)<<11)|((g&0b111111)<<5)|((b&0b11111)))
 
 typedef struct
 		{
@@ -24,3 +27,5 @@ void lcd_data(lcd_t* lcds, const uint8_t *data, int len);
 void lcd_set_cursor(lcd_t* lcds, uint8_t Xstart,uint8_t Ystart, uint8_t Xend, uint8_t Yend);
 
 void lcd_clear(lcd_t* lcds,uint16_t color);
+
+void lcd_draw_rect(lcd_t* lcds, uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color);
